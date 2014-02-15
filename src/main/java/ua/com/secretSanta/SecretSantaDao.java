@@ -1,8 +1,5 @@
 package main.java.ua.com.secretSanta;
 
-import java.io.BufferedReader;
-import java.io.IOException;
-import java.io.InputStreamReader;
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
@@ -11,75 +8,15 @@ import java.util.ArrayList;
 import java.util.Collections;
 
 /**
- * User: Andrew
- * Date: 09.01.14
+ * Created by Andrew on 11.02.14.
  */
-public class SecretSantaJdbc implements SecretSantaCommand {
+public class SecretSantaDao {
     private final Connection connection;
-    private boolean isExit;
 
-    public SecretSantaJdbc(Connection connection) {
+    public SecretSantaDao(Connection connection) {
         this.connection = connection;
-        this.isExit = true;
     }
 
-    @Override
-    public String getMenu() {
-        return  "\n" + "Secret Santa." +
-                "\n" + "0. Exit." +
-                "\n" + "1. Add a new group." +
-                "\n" + "2. Add a new user in the group." +
-                "\n" + "3. Add a desired present to the user." +
-                "\n" + "4. Show the group." +
-                "\n" + "5. Generation the pairs." +
-                "\n" + "Choose 0-5 to continue.";
-    }
-
-    @Override
-    public void createCommand(String input) throws SQLException, IOException {
-        final int menuItem;
-        BufferedReader in = new BufferedReader(new InputStreamReader(System.in));
-        try {
-            menuItem = Integer.parseInt(input);
-        } catch (NumberFormatException e) {
-            throw new IllegalArgumentException("You have entered invalid character. Please enter a number of menu.");
-        }
-        switch (menuItem) {
-            case 0:
-                isExit = false;
-                System.out.println("The application is closed.");
-                break;
-            case 1:
-                System.out.println("Enter the group name.");
-                this.addGroup(in.readLine());
-                break;
-            case 2:
-                System.out.println("Enter yor name.");
-                String userName = in.readLine();
-                System.out.println("Enter the name of the group which you want to add yourself.");
-                this.addUser(in.readLine(), userName);
-                break;
-            case 3:
-                System.out.println("Enter a desired present to you.");
-                String presentTitle = in.readLine();
-                System.out.println("Enter yor name.");
-                userName = in.readLine();
-                this.addPresent(userName, presentTitle);
-                break;
-            case 4:
-                System.out.println("Enter the name of the group to view all members");
-                this.showGroup(in.readLine());
-                break;
-            case 5:
-                System.out.println("Enter the name of the group for the generation the pars");
-                this.generationPairs(in.readLine());
-                break;
-            default:
-                System.out.println("You have entered invalid character.");
-        }
-    }
-
-    @Override
     public void addGroup(String nameGroup) throws SQLException {
         if (isGroupInDB(nameGroup)) {
             System.out.println("The group with this name was already exist.");
@@ -92,8 +29,7 @@ public class SecretSantaJdbc implements SecretSantaCommand {
         }
     }
 
-    @Override
-    public void addUser(String nameGroup, String nameUser) throws SQLException {
+    public void addUser(String nameUser, String nameGroup) throws SQLException {
         if (isGroupInDB(nameGroup)) {
             if (isUserInGroup(nameGroup, nameUser)) {
                 System.out.println("The user with this name was already exist in this group.");
@@ -110,7 +46,6 @@ public class SecretSantaJdbc implements SecretSantaCommand {
         }
     }
 
-    @Override
     public void addPresent(String nameUser, String titlePresent) throws SQLException {
         if (hasTheUserPresent(nameUser, titlePresent)) {
             System.out.println("The present was already exist.");
@@ -128,7 +63,6 @@ public class SecretSantaJdbc implements SecretSantaCommand {
         }
     }
 
-    @Override
     public void showGroup(String nameGroup) throws SQLException {
         PreparedStatement statement = connection.prepareStatement(
                         "SELECT users.name FROM users " +
@@ -146,7 +80,6 @@ public class SecretSantaJdbc implements SecretSantaCommand {
         }
     }
 
-    @Override
     public void generationPairs(String nameGroup) throws SQLException {
         ArrayList<String> giver = getUserCollection(nameGroup);
         ArrayList<String> generatedPairs = new ArrayList<String>();
@@ -172,11 +105,6 @@ public class SecretSantaJdbc implements SecretSantaCommand {
             System.out.println("The group " + nameGroup + " has less than two members.");
         }
 
-    }
-
-    @Override
-    public Boolean isExit() {
-        return isExit;
     }
 
     private ArrayList<String> getUserCollection(String nameGroup) throws SQLException {
@@ -287,4 +215,3 @@ public class SecretSantaJdbc implements SecretSantaCommand {
         }
     }
 }
-

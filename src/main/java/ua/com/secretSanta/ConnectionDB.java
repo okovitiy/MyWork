@@ -4,8 +4,7 @@ import java.sql.Connection;
 import java.sql.DriverManager;
 
 /**
- * User: Andrew
- * Date: 09.01.14
+ * Created by Andrew on 11.02.14.
  */
 
 public class ConnectionDB {

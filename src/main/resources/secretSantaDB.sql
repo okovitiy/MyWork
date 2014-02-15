@@ -25,13 +25,6 @@ CREATE TABLE user_present (
   FOREIGN KEY (id_present) REFERENCES presents (id_present)
 );
 
-CREATE TABLE pairs (
-  giver_id     INT (10) NOT NULL,
-  receiver_id  INT (10) NOT NULL,
-  FOREIGN KEY (giver_id)    REFERENCES users (id_user),
-  FOREIGN KEY (receiver_id) REFERENCES users (id_user)
-);
-
 
 
 
