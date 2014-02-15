@@ -12,6 +12,7 @@ import java.util.Collection;
  * Created by Andrew on 15.02.14.
  */
 
+
 @RunWith(Parameterized.class)
 public class SecretSantaTest {
     private String input;
